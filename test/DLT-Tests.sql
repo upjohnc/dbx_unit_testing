@@ -1,3 +1,35 @@
+-- Databricks notebook source
+-- MAGIC %md 
+-- MAGIC # Testing our DLT pipeline
+-- MAGIC
+-- MAGIC Tests can be added directly as expectation within DLT.
+-- MAGIC
+-- MAGIC This is typically done using a companion notebook and creating a test version of the DLT pipeline.
+-- MAGIC
+-- MAGIC The test DLT pipeline will consume a small test datasets that we'll use to perform cheks on the output: given a specific input, we test the transformation logic by ensuring the output is correct, adding wrong data as input to cover all cases.
+-- MAGIC
+-- MAGIC By leveraging expectations, we can simply run a test DLT pipeline. If the pipeline fail, this means that our tests are failing and something is incorrect.
+-- MAGIC
+-- MAGIC <img style="float: right" width="1000px" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/product_demos/dlt-advanecd/DLT-advanced-unit-test-3.png"/>
+-- MAGIC
+-- MAGIC <!-- Collect usage data (view). Remove it to disable collection. View README for more details.  -->
+-- MAGIC <img width="1px" src="https://www.google-analytics.com/collect?v=1&gtm=GTM-NKQ8TT7&tid=UA-163989034-1&cid=555&aip=1&t=event&ec=field_demos&ea=display&dp=%2F42_field_demos%2Ffeatures%2Fdlt_unit_test%2Fnotebook_test&dt=DLT_UNIT_TEST">
+
+-- COMMAND ----------
+
+-- MAGIC %md 
+-- MAGIC ## Testing incorrect schema ingestion
+-- MAGIC
+-- MAGIC The first thing we'd like to test is that our pipeline is robust and will discard incorrect rows.
+-- MAGIC
+-- MAGIC As example, this line from our test dataset should be discarded and flagged as incorrect:
+-- MAGIC ```
+-- MAGIC {"id":"invalid ID", "email":"margaret84@example.com", ....}
+-- MAGIC ```
+
+-- COMMAND ----------
+
+-- DBTITLE 1,Let's make sure incorrect input rows (bad schema) are dropped
 CREATE TEMPORARY LIVE TABLE TEST_user_bronze_dlt (
   CONSTRAINT incorrect_data_removed EXPECT (not_empty_rescued_data = 0) ON VIOLATION FAIL UPDATE
 )
