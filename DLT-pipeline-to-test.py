@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %md 
+# MAGIC %md
 # MAGIC # Delta live table - Unit testing
 # MAGIC
 # MAGIC ## Why testing?
@@ -47,45 +47,52 @@
 # MAGIC
 # MAGIC For this example, we centralized our main expectations in a metadata table that we'll use in the table definition.
 # MAGIC
-# MAGIC Theses expectations are your usual expectations, used to ensure and track data quality during the ingestion process. 
+# MAGIC Theses expectations are your usual expectations, used to ensure and track data quality during the ingestion process.
 # MAGIC
 # MAGIC We can then build DBSQL dashboard on top of it and triggers alarms when we see error in our data (ex: incompatible schema, increasing our expectation count)
 
 # COMMAND ----------
 
+import dlt
+from pyspark.sql.functions as F
+
 # DBTITLE 1,Define all our expectations as a metadata table
-# In this example, we'll store our rules as a delta table for more flexibility & reusability. 
+# In this example, we'll store our rules as a delta table for more flexibility & reusability.
 # While this isn't directly related to Unit test, it can also help for programatical analysis/reporting.
 
 data = [
- # tag/table name      name              constraint
- ("user_bronze_dlt",  "correct_schema", "_rescued_data IS NULL"),
- ("user_silver_dlt",  "valid_id",       "id IS NOT NULL AND id > 0"),
- ("spend_silver_dlt", "valid_id",       "id IS NOT NULL AND id > 0"),
- ("user_gold_dlt",    "valid_age",      "age IS NOT NULL"),
- ("user_gold_dlt",    "valid_income",   "annual_income IS NOT NULL"),
- ("user_gold_dlt",    "valid_score",    "spending_core IS NOT NULL")
+    # tag/table name      name              constraint
+    ("user_bronze_dlt", "correct_schema", "_rescued_data IS NULL"),
+    ("user_silver_dlt", "valid_id", "id IS NOT NULL AND id > 0"),
+    ("spend_silver_dlt", "valid_id", "id IS NOT NULL AND id > 0"),
+    ("user_gold_dlt", "valid_age", "age IS NOT NULL"),
+    ("user_gold_dlt", "valid_income", "annual_income IS NOT NULL"),
+    ("user_gold_dlt", "valid_score", "spending_core IS NOT NULL"),
 ]
-#Typically only run once, this doesn't have to be part of the DLT pipeline.
-spark.createDataFrame(data=data, schema=["tag", "name", "constraint"]).write.mode("overwrite").save("/demos/product/dlt_unit_test/expectations")
+# Typically only run once, this doesn't have to be part of the DLT pipeline.
+spark.createDataFrame(data=data, schema=["tag", "name", "constraint"]).write.mode(
+    "overwrite"
+).save("/demos/product/dlt_unit_test/expectations")
 
 # COMMAND ----------
 
 # DBTITLE 1,Make expectations portable and reusable from a Delta Table
-#Return the rules matching the tag as a format ready for DLT annotation.
-from pyspark.sql.functions import expr, col
+# Return the rules matching the tag as a format ready for DLT annotation.
+
 
 def get_rules(tag):
-  """
+    """
     loads data quality rules from csv file
     :param tag: tag to match
     :return: dictionary of rules that matched the tag
-  """
-  rules = {}
-  df = spark.read.load("/demos/product/dlt_unit_test/expectations").where(f"tag = '{tag}'")
-  for row in df.collect():
-    rules[row['name']] = row['constraint']
-  return rules
+    """
+    rules = {}
+    df = spark.read.load("/demos/product/dlt_unit_test/expectations").where(
+        f"tag = '{tag}'"
+    )
+    for row in df.collect():
+        rules[row["name"]] = row["constraint"]
+    return rules
 
 
 # COMMAND ----------
@@ -107,12 +114,15 @@ def get_rules(tag):
 # COMMAND ----------
 
 # DBTITLE 1,Ingest raw User stream data in incremental mode
-import dlt
+
 
 @dlt.table(comment="Raw user data")
-@dlt.expect_all_or_drop(get_rules('user_bronze_dlt')) #get the rules from our centralized table.
+@dlt.expect_all_or_drop(
+    get_rules("user_bronze_dlt")
+)  # get the rules from our centralized table.
 def user_bronze_dlt():
-  return dlt.read_stream("raw_user_data")
+    return dlt.read_stream("raw_user_data")
+
 
 # COMMAND ----------
 
@@ -127,25 +137,28 @@ def user_bronze_dlt():
 # COMMAND ----------
 
 # DBTITLE 1,Clean and anonymize User data
-from pyspark.sql.functions import *
+
 
 @dlt.table(comment="User data cleaned and anonymized for analysis.")
-@dlt.expect_all_or_drop(get_rules('user_silver_dlt'))
+@dlt.expect_all_or_drop(get_rules("user_silver_dlt"))
 def user_silver_dlt():
-  return (
-    dlt.read_stream("user_bronze_dlt").select(
-      col("id").cast("int"),
-      sha1("email").alias("email"),
-      to_timestamp(col("creation_date"),"MM-dd-yyyy HH:mm:ss").alias("creation_date"),
-      to_timestamp(col("last_activity_date"),"MM-dd-yyyy HH:mm:ss").alias("last_activity_date"),
-      "firstname", 
-      "lastname", 
-      "address", 
-      "city", 
-      "last_ip", 
-      "postcode"
+    return dlt.read_stream("user_bronze_dlt").select(
+        F.col("id").cast("int"),
+        F.sha1("email").alias("email"),
+        F.to_timestamp(F.col("creation_date"), "MM-dd-yyyy HH:mm:ss").alias(
+            "creation_date"
+        ),
+        F.to_timestamp(F.col("last_activity_date"), "MM-dd-yyyy HH:mm:ss").alias(
+            "last_activity_date"
+        ),
+        "firstname",
+        "lastname",
+        "address",
+        "city",
+        "last_ip",
+        "postcode",
     )
-  )
+
 
 # COMMAND ----------
 
@@ -158,11 +171,13 @@ def user_silver_dlt():
 
 # COMMAND ----------
 
+
 # DBTITLE 1,Ingest user spending score
 @dlt.table(comment="Spending score from raw data")
-@dlt.expect_all_or_drop(get_rules('spend_silver_dlt'))
+@dlt.expect_all_or_drop(get_rules("spend_silver_dlt"))
 def spend_silver_dlt():
     return dlt.read_stream("raw_spend_data")
+
 
 # COMMAND ----------
 
@@ -170,15 +185,19 @@ def spend_silver_dlt():
 # MAGIC ### 4/ Joining the 2 tables to create the gold layer
 # MAGIC We can now join the 2 tables on customer ID to create our final gold table.
 # MAGIC
-# MAGIC As our ML model will be using `age`, `annual_income` and `spending_score` we're adding expectation to only keep valid entries 
+# MAGIC As our ML model will be using `age`, `annual_income` and `spending_score` we're adding expectation to only keep valid entries
 
 # COMMAND ----------
 
+
 # DBTITLE 1,Join both data to create our final table
 @dlt.table(comment="Final user table with all information for Analysis / ML")
-@dlt.expect_all_or_drop(get_rules('user_gold_dlt'))
+@dlt.expect_all_or_drop(get_rules("user_gold_dlt"))
 def user_gold_dlt():
-  return dlt.read_stream("user_silver_dlt").join(dlt.read("spend_silver_dlt"), ["id"], "left")
+    return dlt.read_stream("user_silver_dlt").join(
+        dlt.read("spend_silver_dlt"), ["id"], "left"
+    )
+
 
 # COMMAND ----------
 

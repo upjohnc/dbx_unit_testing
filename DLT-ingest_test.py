@@ -1,12 +1,12 @@
 # Databricks notebook source
-# MAGIC %md 
+# MAGIC %md
 # MAGIC # Defining the Test source
 # MAGIC
-# MAGIC ## Adding an abstraction layer for testability 
+# MAGIC ## Adding an abstraction layer for testability
 # MAGIC
 # MAGIC By defining the ingestion source in an external table, we can easily switch from the production source to a test one.
 # MAGIC
-# MAGIC This lets you easily replace an ingestion from a Kafka server in production by a small csv file in your test. 
+# MAGIC This lets you easily replace an ingestion from a Kafka server in production by a small csv file in your test.
 # MAGIC
 # MAGIC This notebook correspond to the TEST stream (the **blue** input source on the left)
 # MAGIC
@@ -29,21 +29,32 @@
 
 # DBTITLE 1,Ingest raw User stream data in incremental mode
 import dlt
+
 spark.conf.set("pipelines.incompatibleViewCheck.enabled", "false")
+
+
 @dlt.view(comment="Raw user data - Test")
 def raw_user_data():
-  return (
-    spark.readStream.format("cloudFiles")
-      .option("cloudFiles.format", "json")
-      .option("cloudFiles.schemaHints", "id int")
-      .load(f"/demos/retail/customers/test/users_json/*.json"))
+    return (
+        spark.readStream.format("cloudFiles")
+        .option("cloudFiles.format", "json")
+        .option("cloudFiles.schemaHints", "id int")
+        .load(f"/demos/retail/customers/test/users_json/*.json")
+    )
+
 
 # COMMAND ----------
+
 
 # DBTITLE 1,Ingest user spending score
 @dlt.view(comment="Raw spend data - Test")
 def raw_spend_data():
-  return (spark.readStream.format("cloudFiles")
-    .option("cloudFiles.format","csv")
-    .option("cloudFiles.schemaHints", "id int, age int, annual_income float, spending_core float")
-    .load(f"/demos/retail/customers/test/spend_csv/*.csv"))
+    return (
+        spark.readStream.format("cloudFiles")
+        .option("cloudFiles.format", "csv")
+        .option(
+            "cloudFiles.schemaHints",
+            "id int, age int, annual_income float, spending_core float",
+        )
+        .load(f"/demos/retail/customers/test/spend_csv/*.csv")
+    )
