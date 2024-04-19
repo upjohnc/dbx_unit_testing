@@ -45,8 +45,8 @@ def raw_user_data():
 
 # COMMAND ----------
 
-
 # DBTITLE 1,Ingest user spending score
+
 @dlt.view(comment="Raw spend data - Test")
 def raw_spend_data():
     return (
