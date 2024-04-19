@@ -54,7 +54,7 @@
 # COMMAND ----------
 
 import dlt
-from pyspark.sql.functions as F
+import pyspark.sql.functions as F
 
 # DBTITLE 1,Define all our expectations as a metadata table
 # In this example, we'll store our rules as a delta table for more flexibility & reusability.
