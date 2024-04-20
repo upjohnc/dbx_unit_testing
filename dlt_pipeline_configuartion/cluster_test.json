@@ -16,17 +16,7 @@
     "libraries": [
         {
             "notebook": {
-                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/ingestion_profile/DLT-ingest_test"
-            }
-        },
-        {
-            "notebook": {
-                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/DLT-pipeline-to-test"
-            }
-        },
-        {
-            "notebook": {
-                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/test/DLT-Tests"
+                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/test/test_data_setup"
             }
         }
     ],

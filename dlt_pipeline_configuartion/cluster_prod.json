@@ -1,0 +1,27 @@
+{
+    "creator_user_name":"chad.upjohn@pinnsg.com",
+    "clusters": [
+        {
+            "label": "default",
+            "autoscale": {
+                "min_workers": 1,
+                "max_workers": 1
+            }
+        }
+    ],
+    "development": true,
+    "continuous": false,
+    "channel": "CURRENT",
+    "edition": "advanced",
+    "libraries": [
+        {
+            "notebook": {
+                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/ingestion_profile/DLT-ingest_test"
+            }
+        }
+    ],
+    "name": "invoice_processing",
+    "photon":false,
+    "storage": "dbfs:/mnt/dbacademy-datasets/dbx_unit_tests/",
+    "target": "invoice_processing"
+}
