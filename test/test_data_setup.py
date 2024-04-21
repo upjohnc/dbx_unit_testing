@@ -43,6 +43,7 @@ def customer_raw():
 
 
 # COMMAND ----------
+
 invoice_data = [
     # invoiceid
     # invalid_id
@@ -164,5 +165,5 @@ invoice_data = [
     comment="Fake data of invoice for testing",
     temporary=True,
 )
-def invoice_raw():
+def invoices_raw():
     return spark.createDataFrame(invoice_data)
