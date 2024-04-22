@@ -38,7 +38,7 @@ customer_data = [
     comment="Fake data of customers for testing",
     temporary=True,
 )
-def customer_raw():
+def customer_bronze():
     return spark.createDataFrame(customer_data)
 
 
@@ -165,5 +165,5 @@ invoice_data = [
     comment="Fake data of invoice for testing",
     temporary=True,
 )
-def invoices_raw():
+def invoices_bronze():
     return spark.createDataFrame(invoice_data)
