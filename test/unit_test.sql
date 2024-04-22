@@ -1,5 +1,4 @@
 -- Databricks notebook source
--- COMMAND ----------
 CREATE TEMPORARY LIVE TABLE TEST_customer_silver(
     CONSTRAINT no_nulls EXPECT(null_id = 0) ON VIOLATION FAIL UPDATE
     , CONSTRAINT length_greater_than_1 EXPECT(length_id = 0) ON VIOLATION FAIL UPDATE
@@ -25,12 +24,14 @@ customer_id_length AS (
     FROM
         customer_id_null
         , customer_id_length;
--- COMMAND
+
+-- COMMAND ----------
+
 CREATE TEMPORARY LIVE TABLE TEST_invoice_silver(
     CONSTRAINT no_null_cust_id expect(customer_id_count) ON VIOLATION fail UPDATE
     , CONSTRAINT no_null_invoice_id expect(invoice_id_null_count) ON VIOLATION fail UPDATE
     , CONSTRAINT number_invoice_id expect(invoice_id_number_count) ON VIOLATION fail UPDATE
-    , CONSTRAINT quantity_greater_than_zero expect(quantity_count) VIOLATION fail UPDATE
+    , CONSTRAINT quantity_greater_than_zero expect(quantity_count) ON VIOLATION fail UPDATE
 )
 WITH customer_id_null AS (
     SELECT
@@ -81,13 +82,14 @@ FROM
     , invoice_id_number
     , quantity_negative;
 
--- COMAND ------
+
+
+-- COMMAND ----------
 
 CREATE TEMPORARY LIVE TABLE TEST_uk_aggregation(
-    CONSTRAINT aggregation_count expect(row_count) ON VIOLATION fail UPDATE
+    CONSTRAINT aggregation_count EXPECT(row_count) ON VIOLATION fail UPDATE
 )
 SELECT
     count (*)
 FROM
-    daily_sales_uk_2022;
-
+    LIVE.daily_sales_uk_2022;
