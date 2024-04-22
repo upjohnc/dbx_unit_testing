@@ -16,7 +16,7 @@
     "libraries": [
         {
             "notebook": {
-                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/test/test_data_setup"
+                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/pipeline_code/invoice_raw_setup"
             }
         },
         {
