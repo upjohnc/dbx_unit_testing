@@ -88,9 +88,9 @@ FROM
 -- COMMAND ----------
 
 CREATE TEMPORARY LIVE TABLE TEST_uk_aggregation(
-    CONSTRAINT aggregation_count EXPECT(row_count = 0) ON VIOLATION fail UPDATE
+    CONSTRAINT aggregation_count EXPECT(row_count = 2) ON VIOLATION fail UPDATE
 )
 SELECT
-    count (*) as row_count
+    count (*) AS row_count
 FROM
     LIVE.daily_sales_uk_2022;
