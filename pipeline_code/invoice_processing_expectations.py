@@ -46,7 +46,7 @@ def invoice_no_stock_code_pk():
 
 
 @dlt.table(temporary=True, comment="For each invoice no there is only one customer id")
-@dlt.expect_all_or_fail({"single_customer_per_invoice_no": ""})
+@dlt.expect_all_or_fail({"single_customer_per_invoice_no": "counter < 2"})
 def one_customer_id_per_invoice_no():
     df = dlt.read_stream("invoices_silver").select("invoice_no", "customer_id").distinct()
 
