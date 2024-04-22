@@ -21,12 +21,12 @@
         },
         {
             "notebook": {
-                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/invoice_processing"
+                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/pipeline_code/invoice_processing"
             }
         },
         {
             "notebook": {
-                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/invoice_processing_expectations"
+                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/pipeline_code/invoice_processing_expectations"
             }
         }
     ],

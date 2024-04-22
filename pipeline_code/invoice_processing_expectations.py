@@ -7,7 +7,7 @@
 import dlt
 import pyspark.sql.functions as F
 
-## COMMAND
+# COMMAND
 
 
 @dlt.table(
