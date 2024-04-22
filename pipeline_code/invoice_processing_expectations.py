@@ -22,8 +22,7 @@ def expect_customer_id_both_tables():
         .join(customer_silver, on="customer_id", how="left")
         .select(customer_silver.customer_id)
         .filter(customer_silver.customer_id.isNull())
-        .count()
-        .alias("counter")
+        .agg(F.count("*").alias("counter"))
     )
 
 
