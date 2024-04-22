@@ -52,7 +52,7 @@ def invoices_silver():
 
 
 @dlt.table(table_properties={"quality": "gold"})
-def daily_sales_2022():
+def daily_sales_uk_2022():
     return (
         dlt.read_stream("invoices_silver")
         .filter((F.col("invoice_year") == 2022) & (F.col("country") == "United Kingdom"))

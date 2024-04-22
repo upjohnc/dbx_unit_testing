@@ -1,7 +1,8 @@
 -- Databricks notebook source
 -- COMMAND ----------
 CREATE TEMPORARY LIVE TABLE TEST_customer_silver(
-    CONSTRAINT ON VIOLATION fail
+    CONSTRAINT no_nulls EXPECT(null_id = 0) ON VIOLATION FAIL UPDATE
+    , CONSTRAINT length_greater_than_1 EXPECT(length_id = 0) ON VIOLATION FAIL UPDATE
 )
 WITH customer_id_null AS (
     SELECT
@@ -9,11 +10,12 @@ WITH customer_id_null AS (
     FROM
         LIVE.customer_silver
     WHERE
-        customer_id IS NULL) , customer_id_length AS (
+        customer_id IS NULL),
+customer_id_length AS (
         SELECT
             count(*) AS row_count
         FROM
-            LIKE.customer_silver
+            LIVE.customer_silver
         WHERE
             len(customer_id) > 1
 )
@@ -23,4 +25,69 @@ WITH customer_id_null AS (
     FROM
         customer_id_null
         , customer_id_length;
+-- COMMAND
+CREATE TEMPORARY LIVE TABLE TEST_invoice_silver(
+    CONSTRAINT no_null_cust_id expect(customer_id_count) ON VIOLATION fail UPDATE
+    , CONSTRAINT no_null_invoice_id expect(invoice_id_null_count) ON VIOLATION fail UPDATE
+    , CONSTRAINT number_invoice_id expect(invoice_id_number_count) ON VIOLATION fail UPDATE
+    , CONSTRAINT quantity_greater_than_zero expect(quantity_count) VIOLATION fail UPDATE
+)
+WITH customer_id_null AS (
+    SELECT
+        count(*) AS row_count
+    FROM
+        LIVE.invoices_silver
+    WHERE
+        customer_id IS NULL) , invoice_id_null AS (
+        SELECT
+            count(*) AS row_count
+        FROM
+            LIVE.invoices_silver
+        WHERE
+            invoice_id IS NULL)
+, invoice_id_number AS (
+    WITH temp AS (
+    SELECT
+        CASE WHEN TRY_CAST(invoice_id AS int) IS NULL THEN
+            0
+        ELSE
+            1
+        END AS is_numeric
+    FROM
+        LIVE.invoices_silver
+    )
+        SELECT
+            count(*) AS row_count
+        FROM
+            temp
+        WHERE
+            is_numeric == 0)
+, quantity_negative AS (
+    SELECT
+        count(*) AS row_count
+    FROM
+        LIVE.invoices_silver
+    WHERE
+        quantity < 1
+)
+SELECT
+    customer_id_null.row_count AS customer_id_count
+    , invoice_id_null.row_count AS invoice_id_null_count
+    , invoice_id_number.row_count AS invoice_id_number_count
+    , quantity_negative.row_count AS quantity_count
+FROM
+    customer_id_null
+    , invoice_id_null
+    , invoice_id_number
+    , quantity_negative;
+
+-- COMAND ------
+
+CREATE TEMPORARY LIVE TABLE TEST_uk_aggregation(
+    CONSTRAINT aggregation_count expect(row_count) ON VIOLATION fail UPDATE
+)
+SELECT
+    count (*)
+FROM
+    daily_sales_uk_2022;
 
