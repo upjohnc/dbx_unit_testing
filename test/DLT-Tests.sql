@@ -1,5 +1,5 @@
 -- Databricks notebook source
--- MAGIC %md 
+-- MAGIC %md
 -- MAGIC # Testing our DLT pipeline
 -- MAGIC
 -- MAGIC Tests can be added directly as expectation within DLT.
@@ -14,10 +14,8 @@
 -- MAGIC
 -- MAGIC <!-- Collect usage data (view). Remove it to disable collection. View README for more details.  -->
 -- MAGIC <img width="1px" src="https://www.google-analytics.com/collect?v=1&gtm=GTM-NKQ8TT7&tid=UA-163989034-1&cid=555&aip=1&t=event&ec=field_demos&ea=display&dp=%2F42_field_demos%2Ffeatures%2Fdlt_unit_test%2Fnotebook_test&dt=DLT_UNIT_TEST">
-
 -- COMMAND ----------
-
--- MAGIC %md 
+-- MAGIC %md
 -- MAGIC ## Testing incorrect schema ingestion
 -- MAGIC
 -- MAGIC The first thing we'd like to test is that our pipeline is robust and will discard incorrect rows.
@@ -26,21 +24,19 @@
 -- MAGIC ```
 -- MAGIC {"id":"invalid ID", "email":"margaret84@example.com", ....}
 -- MAGIC ```
-
 -- COMMAND ----------
-
 -- DBTITLE 1,Let's make sure incorrect input rows (bad schema) are dropped
-CREATE TEMPORARY LIVE TABLE TEST_user_bronze_dlt (
-  CONSTRAINT incorrect_data_removed EXPECT (not_empty_rescued_data = 0) ON VIOLATION FAIL UPDATE
-)
-COMMENT "TEST: bronze table properly drops row with incorrect schema"
-AS
-SELECT count(*) AS not_empty_rescued_data
-FROM live.user_bronze_dlt
-WHERE _rescued_data IS NOT NULL OR email = 'margaret84@example.com'
+CREATE TEMPORARY LIVE TABLE TEST_user_bronze_dlt(
+    CONSTRAINT incorrect_data_removed EXPECT(not_empty_rescued_data = 0) ON VIOLATION FAIL UPDATE) COMMENT "TEST: bronze table properly drops row with incorrect schema" AS
+SELECT
+    count(*) AS not_empty_rescued_data
+FROM
+    LIVE.user_bronze_dlt
+WHERE
+    _rescued_data IS NOT NULL
+    OR email = 'margaret84@example.com';
 
 -- COMMAND ----------
-
 -- MAGIC %md
 -- MAGIC ## Let's continue our tests on the silver table with multiple checks at once
 -- MAGIC
@@ -49,53 +45,59 @@ WHERE _rescued_data IS NOT NULL OR email = 'margaret84@example.com'
 -- MAGIC * null ids are removed (our test dataset contains null)
 -- MAGIC * we should have 4 rows as output (based on the input)
 -- MAGIC * the emails are properly anonymized
+-- COMMAND ----------
+CREATE TEMPORARY LIVE TABLE TEST_user_silver_dlt_anonymize(
+    CONSTRAINT keep_all_rows EXPECT(num_rows = 4) ON VIOLATION FAIL UPDATE
+    , CONSTRAINT email_should_be_anonymized EXPECT(clear_email = 0) ON VIOLATION FAIL UPDATE
+    , CONSTRAINT null_ids_removed EXPECT(null_id_count = 0) ON VIOLATION FAIL UPDATE) COMMENT "TEST: check silver table removes null ids and anonymize emails" AS (
+    WITH rows_test AS (
+    SELECT
+        count(*
+) AS num_rows
+    FROM
+        LIVE.user_silver_dlt)
+        , email_test AS (
+        SELECT
+            count(*
+) AS clear_email
+        FROM
+            LIVE.user_silver_dlt
+        WHERE
+            email LIKE '%@%')
+            , id_test AS (
+            SELECT
+                count(*
+) AS null_id_count
+            FROM
+                LIVE.user_silver_dlt
+            WHERE
+                id IS NULL
+)
+                SELECT
+                    *
+                FROM
+                    email_test
+                    , id_test
+                    , rows_test
+);
 
 -- COMMAND ----------
-
-CREATE TEMPORARY LIVE TABLE TEST_user_silver_dlt_anonymize (
-  CONSTRAINT keep_all_rows              EXPECT (num_rows = 4)      ON VIOLATION FAIL UPDATE,
-  CONSTRAINT email_should_be_anonymized EXPECT (clear_email = 0)  ON VIOLATION FAIL UPDATE,
-  CONSTRAINT null_ids_removed           EXPECT (null_id_count = 0) ON VIOLATION FAIL UPDATE
-)
-COMMENT "TEST: check silver table removes null ids and anonymize emails"
-AS (
-  WITH rows_test  AS (
-      SELECT count(*) AS num_rows
-      FROM LIVE.user_silver_dlt
-    ),
-  email_test AS (
-      SELECT count(*) AS clear_email
-      FROM live.user_silver_dlt
-      WHERE email LIKE '%@%'
-     ),
-  id_test    AS (
-      SELECT count(*) AS null_id_count
-      FROM live.user_silver_dlt
-      WHERE id IS NULL
-     )
-  SELECT * from email_test, id_test, rows_test
-)
-
--- COMMAND ----------
-
 -- MAGIC %md
 -- MAGIC ## Testing Primary key uniqueness
 -- MAGIC
 -- MAGIC Finally, we'll enforce uniqueness on the gold table to avoid any duplicates
+-- COMMAND ----------
+CREATE TEMPORARY LIVE TABLE TEST_user_gold_dlt(
+    CONSTRAINT pk_must_be_unique EXPECT(duplicate = 1) ON VIOLATION FAIL UPDATE) COMMENT "TEST: check that gold table only contains unique customer id" AS
+SELECT
+    count(*) AS duplicate
+    , id
+FROM
+    LIVE.user_gold_dlt
+GROUP BY
+    id;
 
 -- COMMAND ----------
-
-CREATE TEMPORARY LIVE TABLE TEST_user_gold_dlt (
-  CONSTRAINT pk_must_be_unique EXPECT (duplicate = 1) ON VIOLATION FAIL UPDATE
-)
-COMMENT "TEST: check that gold table only contains unique customer id"
-AS
-SELECT count(*) AS duplicate, id
-FROM LIVE.user_gold_dlt
-GROUP BY id
-
--- COMMAND ----------
-
 -- MAGIC %md
 -- MAGIC That's it. All we have to do now is run the full pipeline.
 -- MAGIC
