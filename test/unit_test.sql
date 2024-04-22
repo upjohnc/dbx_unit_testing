@@ -28,10 +28,10 @@ customer_id_length AS (
 -- COMMAND ----------
 
 CREATE TEMPORARY LIVE TABLE TEST_invoice_silver(
-    CONSTRAINT no_null_cust_id expect(customer_id_count) ON VIOLATION fail UPDATE
-    , CONSTRAINT no_null_invoice_id expect(invoice_id_null_count) ON VIOLATION fail UPDATE
-    , CONSTRAINT number_invoice_id expect(invoice_id_number_count) ON VIOLATION fail UPDATE
-    , CONSTRAINT quantity_greater_than_zero expect(quantity_count) ON VIOLATION fail UPDATE
+    CONSTRAINT no_null_cust_id expect(customer_id_count = 0) ON VIOLATION fail UPDATE
+    , CONSTRAINT no_null_invoice_id expect(invoice_no_null_count = 0) ON VIOLATION fail UPDATE
+    , CONSTRAINT number_invoice_id expect(invoice_no_number_count = 0) ON VIOLATION fail UPDATE
+    , CONSTRAINT quantity_greater_than_zero expect(quantity_count = 0) ON VIOLATION fail UPDATE
 )
 WITH customer_id_null AS (
     SELECT
@@ -39,17 +39,18 @@ WITH customer_id_null AS (
     FROM
         LIVE.invoices_silver
     WHERE
-        customer_id IS NULL) , invoice_id_null AS (
-        SELECT
-            count(*) AS row_count
-        FROM
-            LIVE.invoices_silver
-        WHERE
-            invoice_id IS NULL)
-, invoice_id_number AS (
+        customer_id IS NULL) 
+, invoice_no_null AS (
+    SELECT
+        count(*) AS row_count
+    FROM
+        LIVE.invoices_silver
+    WHERE
+        invoice_no IS NULL)
+, invoice_no_number AS (
     WITH temp AS (
     SELECT
-        CASE WHEN TRY_CAST(invoice_id AS int) IS NULL THEN
+        CASE WHEN TRY_CAST(invoice_no AS int) IS NULL THEN
             0
         ELSE
             1
@@ -73,13 +74,13 @@ WITH customer_id_null AS (
 )
 SELECT
     customer_id_null.row_count AS customer_id_count
-    , invoice_id_null.row_count AS invoice_id_null_count
-    , invoice_id_number.row_count AS invoice_id_number_count
+    , invoice_no_null.row_count AS invoice_no_null_count
+    , invoice_no_number.row_count AS invoice_no_number_count
     , quantity_negative.row_count AS quantity_count
 FROM
     customer_id_null
-    , invoice_id_null
-    , invoice_id_number
+    , invoice_no_null
+    , invoice_no_number
     , quantity_negative;
 
 
@@ -87,9 +88,9 @@ FROM
 -- COMMAND ----------
 
 CREATE TEMPORARY LIVE TABLE TEST_uk_aggregation(
-    CONSTRAINT aggregation_count EXPECT(row_count) ON VIOLATION fail UPDATE
+    CONSTRAINT aggregation_count EXPECT(row_count = 0) ON VIOLATION fail UPDATE
 )
 SELECT
-    count (*)
+    count (*) as row_count
 FROM
     LIVE.daily_sales_uk_2022;
