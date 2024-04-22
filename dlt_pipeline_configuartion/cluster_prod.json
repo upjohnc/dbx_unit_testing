@@ -1,5 +1,5 @@
 {
-    "creator_user_name":"chad.upjohn@pinnsg.com",
+    "creator_user_name": "chad.upjohn@pinnsg.com",
     "clusters": [
         {
             "label": "default",
@@ -16,12 +16,22 @@
     "libraries": [
         {
             "notebook": {
-                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/ingestion_profile/DLT-ingest_test"
+                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/test/test_data_setup"
+            }
+        },
+        {
+            "notebook": {
+                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/invoice_processing"
+            }
+        },
+        {
+            "notebook": {
+                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/invoice_processing_expectations"
             }
         }
     ],
-    "name": "invoice_processing",
-    "photon":false,
-    "storage": "dbfs:/mnt/dbacademy-datasets/dbx_unit_tests/",
-    "target": "invoice_processing"
+    "name": "chad_unit_test_prod",
+    "photon": false,
+    "storage": "dbfs:/mnt/dbacademy-datasets/dbx_unit_test_prod/",
+    "target": "chad_invoice_processing"
 }
