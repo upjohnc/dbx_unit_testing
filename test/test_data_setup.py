@@ -2,27 +2,12 @@
 # MAGIC %md
 # MAGIC # Test Datasets setup
 # MAGIC
-# MAGIC We have 2 files that we'll be using as dataset saved in git within the project (you can open them directly under the `dataset` folder).
-# MAGIC
-# MAGIC All we have to do is move these local files to our blob storage so that we can read them within our DLT test pipeline.
-# MAGIC
-# MAGIC *Note: We could also have used Faker to generate them dynamicall.*
-# MAGIC
-# MAGIC <!-- Collect usage data (view). Remove it to disable collection. View README for more details.  -->
-# MAGIC <img width="1px" src="https://www.google-analytics.com/collect?v=1&gtm=GTM-NKQ8TT7&tid=UA-163989034-1&cid=555&aip=1&t=event&ec=field_demos&ea=display&dp=%2F42_field_demos%2Ffeatures%2Fdlt_unit_test%2Fnotebook_dataset&dt=DLT_UNIT_TEST">
+# MAGIC Temporary tables that mock the ingestion of data done in the bronze tier
 
 # COMMAND ----------
 
 import dlt
 import pyspark.sql.functions as F
-
-# CustomerID
-# CustomerName
-
-
-# InvoiceNo
-# StockCode
-# Description	Quantity	InvoiceDate	UnitPrice	CustomerID	Country
 
 # COMMAND ----------
 
@@ -48,11 +33,6 @@ def customer_bronze():
 # COMMAND ----------
 
 invoice_data = [
-    # invoiceid
-    # invalid_id
-    # null id
-    # no customerid
-    # quantity -2
     {
         "InvoiceNo": 536392,
         "StockCode": "21891",
@@ -83,14 +63,6 @@ invoice_data = [
         "CustomerID": None,
         "Country": "United Kingdom",
     },
-    # command
-    # invoice_data
-    # invoiceid
-    # 1, 1, 1
-    # stockid
-    # 1,2,3
-    # customerid
-    # 2,2,6
     {
         "InvoiceNo": 536394,
         "StockCode": "85152",

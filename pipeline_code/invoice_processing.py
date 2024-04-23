@@ -1,4 +1,13 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC # Production Silver & Gold
+# MAGIC
+# MAGIC Clean the ingested data from bronze tier
+# MAGIC
+# MAGIC Create Gold tier aggregation
+
+# COMMAND ----------
+
 import dlt
 import pyspark.sql.functions as F
 

@@ -1,10 +1,12 @@
 # Databricks notebook source
-
 # MAGIC %md
-# MAGIC # Import to bronze tables
+# MAGIC # Production Start
+# MAGIC
+# MAGIC Import to bronze tables
+# MAGIC
 
+# COMMAND ----------
 
-# COMMAND
 @dlt.table(
     comment="Store the raw data ingested from Customers source.",
     table_properties={"quality": "bronze"},
@@ -23,6 +25,7 @@ def customers_bronze():
 
 
 # COMMAND ----------
+
 @dlt.table(
     comment="Store the raw data ingested from Invoices source.",
     table_properties={"quality": "bronze"},

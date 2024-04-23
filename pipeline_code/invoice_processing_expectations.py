@@ -1,13 +1,16 @@
 # Databricks notebook source
-
 # MAGIC %md
-# MAGIC # Expectaction Testing
+# MAGIC # Production - Data Validation
+# MAGIC
+# MAGIC Leverage temp tables to validate the data in silver and gold tiers
+# MAGIC
 
-# COMMAND
+# COMMAND ----------
+
 import dlt
 import pyspark.sql.functions as F
 
-# COMMAND
+# COMMAND ----------
 
 
 @dlt.table(
@@ -26,7 +29,7 @@ def expect_customer_id_both_tables():
     )
 
 
-# COMMAND
+# COMMAND ----------
 
 
 @dlt.table(
@@ -41,7 +44,7 @@ def invoice_no_stock_code_pk():
     )
 
 
-# COMMAND
+# COMMAND ----------
 
 
 @dlt.table(temporary=True, comment="For each invoice no there is only one customer id")

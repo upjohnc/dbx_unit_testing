@@ -1,4 +1,21 @@
 -- Databricks notebook source
+-- MAGIC %md
+-- MAGIC # Unit Tests
+-- MAGIC
+-- MAGIC Expectations to test the silver and gold tier queries handled the business rules as defined.
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ## Test Customer Silver
+-- MAGIC
+-- MAGIC Check that 
+-- MAGIC - customer_id is not null
+-- MAGIC - length of customer_name is greater than 1
+
+-- COMMAND ----------
+
 CREATE TEMPORARY LIVE TABLE TEST_customer_silver(
     CONSTRAINT no_nulls EXPECT(null_id = 0) ON VIOLATION FAIL UPDATE
     , CONSTRAINT length_greater_than_1 EXPECT(length_id = 0) ON VIOLATION FAIL UPDATE
@@ -24,6 +41,16 @@ customer_id_length AS (
     FROM
         customer_id_null
         , customer_id_length;
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ## Test Invoices Silver
+-- MAGIC
+-- MAGIC Check that:
+-- MAGIC - invoice_no is not null
+-- MAGIC - invoice_no is a number
+-- MAGIC - quantity is non-negative
 
 -- COMMAND ----------
 
@@ -84,6 +111,13 @@ FROM
     , quantity_negative;
 
 
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ## Test the Gold UK Aggregation
+-- MAGIC
+-- MAGIC Check that 2 rows are created from the aggregation based on the test data
 
 -- COMMAND ----------
 
