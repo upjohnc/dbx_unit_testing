@@ -9,18 +9,21 @@ poetry-install:
 pre-commit:
     poetry run pre-commit install
 
+pipeline-from-template environment='dev':
+    poetry run python ./dlt_pipeline_configuration/pipeline_template.py {{ environment }}
+
 # Create the unit test pipeline
-pipeline-dev-create:
-    databricks pipelines create --json @dlt_pipeline_configuartion/cluster_test.json
+pipeline-dev-create: (pipeline-from-template 'dev')
+    databricks pipelines create --json @dlt_pipeline_configuration/pipeline_config.json
 
 # Update the unit test pipeline
-pipeline-dev-update pipeline_id:
-    databricks pipelines update {{ pipeline_id }} --json @dlt_pipeline_configuartion/cluster_test.json
+pipeline-dev-update pipeline_id: (pipeline-from-template 'dev')
+    databricks pipelines update {{ pipeline_id }} --json @dlt_pipeline_configuration/pipeline_config.json
 
 # Create the prod pipeline
-pipeline-prod-create:
-    databricks pipelines create --json @dlt_pipeline_configuartion/cluster_prod.json
+pipeline-prod-create: (pipeline-from-template 'prod')
+    databricks pipelines create --json @dlt_pipeline_configuration/pipeline_config.json
 
 # Update the prod pipeline
-pipeline-prod-update pipeline_id:
-    databricks pipelines update {{ pipeline_id }} --json @dlt_pipeline_configuartion/cluster_prod.json
+pipeline-prod-update pipeline_id: (pipeline-from-template 'prod')
+    databricks pipelines update {{ pipeline_id }} --json @dlt_pipeline_configuration/pipeline_config.json

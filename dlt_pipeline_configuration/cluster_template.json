@@ -1,5 +1,5 @@
 {
-    "creator_user_name": "chad.upjohn@pinnsg.com",
+    "creator_user_name": "{{ creator }}",
     "clusters": [
         {
             "label": "default",
@@ -16,22 +16,22 @@
     "libraries": [
         {
             "notebook": {
-                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/test/test_data_setup"
+                "path": "/Repos/{{ repo_name }}/test/test_data_setup"
             }
         },
         {
             "notebook": {
-                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/pipeline_code/invoice_processing"
+                "path": "/Repos/{{ repo_name }}/pipeline_code/invoice_processing"
             }
         },
         {
             "notebook": {
-                "path": "/Repos/chad.upjohn@pinnsg.com/dbx_unit_testing/test/unit_test"
+                "path": "/Repos/{{ repo_name }}/test/unit_test"
             }
         }
     ],
-    "name": "chad_unit_test_example",
+    "name": "{{ pipeline_name }}",
     "photon": false,
-    "storage": "dbfs:/mnt/dbacademy-datasets/dbx_unit_tests/",
-    "target": "chad_upjohn_dbx_unit_tests"
+    "storage": "{{ storage }}",
+    "target": "{{ target }}"
 }
