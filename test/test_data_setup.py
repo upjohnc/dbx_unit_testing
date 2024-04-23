@@ -14,6 +14,7 @@
 # COMMAND ----------
 
 import dlt
+import pyspark.sql.functions as F
 
 # CustomerID
 # CustomerName
@@ -39,7 +40,9 @@ customer_data = [
     temporary=True,
 )
 def customer_bronze():
-    return spark.createDataFrame(customer_data)
+    return spark.createDataFrame(customer_data).withColumn(
+        "load_time", F.current_timestamp
+    )
 
 
 # COMMAND ----------
@@ -166,4 +169,6 @@ invoice_data = [
     temporary=True,
 )
 def invoices_bronze():
-    return spark.createDataFrame(invoice_data)
+    return spark.createDataFrame(invoice_data).withColumn(
+        "load_time", F.current_timestamp
+    )

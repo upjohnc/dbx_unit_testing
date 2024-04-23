@@ -16,6 +16,7 @@ def customer_silver():
     return dlt.read_stream("customer_bronze").select(
         F.col("CustomerID").cast("int").alias("customer_id"),
         F.col("CustomerName").alias("customer_name"),
+        "load_time",
     )
 
 
@@ -32,7 +33,7 @@ invoice_columns = [
     F.col("Country").alias("country"),
     F.year(F.to_date("InvoiceDate", format="d-M-y H.m")).alias("invoice_year"),
     F.month(F.to_date("InvoiceDate", format="d-M-y H.m")).alias("invoice_month"),
-    # "load_time",
+    "load_time",
 ]
 
 
