@@ -5,12 +5,15 @@ import yaml
 
 
 def main(env="dev"):
+    cluster_file = "cluster_dev_template.json"
+    if env == "prod":
+        cluster_file = "cluster_prod_template.json"
     environment = jinja2.Environment(
         loader=jinja2.FileSystemLoader("dlt_pipeline_configuration")
     )
-    template = environment.get_template("cluster_template.json")
+    template = environment.get_template(cluster_file)
 
-    with open("./dlt_pipeline_configuration/pipeline_input.yml") as f:
+    with open("./dlt_pipeline_configuration/pipeline_template_input.yml") as f:
         input_data = yaml.load(f, Loader=yaml.Loader)
 
     with open("./dlt_pipeline_configuration/pipeline_config.json", "w") as f:
