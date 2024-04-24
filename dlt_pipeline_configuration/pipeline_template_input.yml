@@ -1,12 +1,12 @@
 dev:
-  repo_name: 'chad.upjohn@pinnsg.com/dbx_unit_testing'
+  repo_name: 'chad.upjohn@pinnsg.com/DevLab-Dbx/uc_002_dbx_unit_testing'
   pipeline_name: 'chad_unit_test_example'
-  storage: 'dbfs:/mnt/dbacademy-datasets/dbx_unit_tests/'
-  target: 'chad_upjohn_dbx_unit_tests'
+  catalog: 'devlab_accelerators_catalog'
+  target: 'uc_001_basic_dlt_schema'
   creator: 'chad.upjohn@pinnsg.com'
 prod:
-  repo_name: 'chad.upjohn@pinnsg.com/dbx_unit_testing'
+  repo_name: 'chad.upjohn@pinnsg.com/DevLab-Dbx/uc_002_dbx_unit_testing'
   pipeline_name: 'chad_unit_test_prod'
-  storage: 'dbfs:/mnt/dbacademy-datasets/dbx_unit_tests/'
-  target: 'chad_invoice_processing'
+  catalog: 'devlab_accelerators_catalog'
+  target: 'uc_001_basic_dlt_schema'
   creator: 'chad.upjohn@pinnsg.com'

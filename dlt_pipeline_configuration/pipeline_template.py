@@ -16,7 +16,7 @@ def main(env="dev"):
     with open("./dlt_pipeline_configuration/pipeline_template_input.yml") as f:
         input_data = yaml.load(f, Loader=yaml.Loader)
 
-    with open("./dlt_pipeline_configuration/pipeline_config.json", "w") as f:
+    with open("./dlt_pipeline_configuration/pipeline_temp_config.json", "w") as f:
         f.write(template.render(input_data[env]))
 
 

@@ -14,7 +14,7 @@ Based on this [databricks example](https://notebooks.databricks.com/demos/dlt-un
 
 **Diagram of Notebooks**
 
-![Diagram](./support/unit-test-diagram.jpg)
+![Diagram](./images/unit-test-diagram.jpg)
 
 ## Pipeline Deployment
 
@@ -24,6 +24,17 @@ The databricks cli command is:
 
 ## Local Dev Set Up
 
+#### Databricks-CLI
+
+The commands to set up the pipelines use `databricks-cli`.  You can brew install:
+[link to install instructions](https://docs.databricks.com/en/dev-tools/cli/tutorial.html#databricks-cli-tutorial).
+You will need to follow the instructions
+to set up an access token which will be added to your local setup through the `databricks-cli`.
+
+#### Justfile
+
 `.justfile` for common commands. [just github](https://github.com/casey/just?tab=readme-ov-file#installation)
+
+#### pre-commit
 
 `pre-commit` : isort and black formatting when creating a commit

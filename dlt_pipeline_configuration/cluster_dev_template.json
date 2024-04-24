@@ -32,6 +32,6 @@
     ],
     "name": "{{ pipeline_name }}",
     "photon": false,
-    "storage": "{{ storage }}",
+    "catalog": "{{ catalog }}",
     "target": "{{ target }}"
 }
