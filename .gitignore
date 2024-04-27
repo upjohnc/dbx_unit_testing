@@ -1,6 +1,11 @@
 # pipeline config after variable injection
 dlt_pipeline_configuration/pipeline_temp_config.json
 
+.envrc
+
+# databricks dir used for deployment
+.databricks
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

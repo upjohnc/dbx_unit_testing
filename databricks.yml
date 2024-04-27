@@ -1,0 +1,12 @@
+bundle:
+  name: chad_dbx_unit_tests
+
+include:
+  - dbx_bundle_resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-d02e2229-51a4.cloud.databricks.com

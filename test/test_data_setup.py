@@ -26,7 +26,7 @@ customer_data = [
 )
 def customer_bronze():
     return spark.createDataFrame(customer_data).withColumn(
-        "load_time", F.current_timestamp
+        "load_time", F.current_timestamp()
     )
 
 
@@ -142,5 +142,5 @@ invoice_data = [
 )
 def invoices_bronze():
     return spark.createDataFrame(invoice_data).withColumn(
-        "load_time", F.current_timestamp
+        "load_time", F.current_timestamp()
     )
