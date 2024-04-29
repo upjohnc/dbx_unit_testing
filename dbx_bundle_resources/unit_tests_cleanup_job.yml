@@ -1,12 +1,18 @@
 resources:
   jobs:
-    unit_test_cleanup_job:
-      name: unit_test_cleanup_job
+    unit_test:
+      name: unit_test
 
       tasks:
-        - task_key: refresh_pipeline
+        - task_key: unit_test_run
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.unit_test_pipeline.id}
+            full_refresh: true
+        - task_key: clean_up
           notebook_task:
             notebook_path: ../clean_up.py
+          depends_on:
+            - task_key: unit_test_run
           new_cluster:
             spark_version: 13.3.x-scala2.12
             node_type_id: i3.xlarge

@@ -9,12 +9,11 @@ poetry-install:
 pre-commit:
     poetry run pre-commit install
 
-pipeline-deploy:
+bundle-deploy:
     databricks bundle deploy -t dev
 
-pipeline-run:
-    databricks bundle run unit_test_pipeline -t dev --full-refresh-all
-
-pipeline-destroy:
+bundle-destroy:
     databricks bundle destroy -t dev
 
+bundle-run:
+    databricks bundle run unit_test -t dev --full-refresh-all
