@@ -16,11 +16,20 @@ Based on this [databricks example](https://notebooks.databricks.com/demos/dlt-un
 
 ![Diagram](./images/unit-test-diagram.jpg)
 
-## Pipeline Deployment
+## Pipeline Deployment & Run
 
-To create the pipeline, you can use the json file in `pipeline_code` as a template.
-The databricks cli command is:
-`databricks pipelines create --json @dlt_pipeline_configuartion/cluster_test.json`
+The pipelines are set up to be run manually and then checked for succes or failure by a human.
+To note, it can be automated to confirm the success through code that can be then run in
+a ci/cd pipeline.
+
+The databricks bundle is designed to run a job which has two tasks.  The first task runs
+the DLT pipeline and then on success the second task runs to clean up the tables and schema
+that were created by the DLT pipeline.  An individual can run the databricks bundle, then
+check the DLT pipeline run for the success of the unit tests, and finally destroy the jobs and pipeline.
+
+- run `databricks bundle deploy` : just command `just bundle-deploy`
+- run `databricks bundle run` : just command `just bundle-run`
+- run `databricks bundle destroy` : just command `just bundle-destroy`
 
 ## Local Dev Set Up
 

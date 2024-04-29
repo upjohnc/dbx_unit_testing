@@ -10,7 +10,7 @@ resources:
             full_refresh: true
         - task_key: clean_up
           notebook_task:
-            notebook_path: ../clean_up.py
+            notebook_path: ../pipeline_code/clean_up.py
           depends_on:
             - task_key: unit_test_run
           new_cluster:
