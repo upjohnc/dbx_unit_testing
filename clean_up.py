@@ -1,9 +1,18 @@
 # Databricks notebook source
 
-schema_name = "chad_invoice_processing"
-t = spark.sql(f"show tables in {schema_name};").collect()
+catalog = "hive_metastore"
+schema_name = "uc_001_basic_dlt_schema"
+if (
+    spark.sql(f"SHOW SCHEMAS IN {catalog}")
+    .filter(f"databaseName == '{schema_name}'")
+    .count()
+    == 1
+):
+    tables = spark.sql(f"SHOW TABLES in {schema_name};").collect()
 
-for i in t:
-    spark.sql(f"drop table {schema_name}.{i.tableName};")
+    for table in tables:
+        spark.sql(f"DROP TABLE {schema_name}.{table.tableName};")
 
-spark.sql(f"drop schema {schema_name};")
+    spark.sql(f"drop schema {schema_name};")
+else:
+    print(f"Schema Name '{schema_name}' does not exist")
