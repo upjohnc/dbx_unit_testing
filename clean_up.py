@@ -1,8 +1,9 @@
 # Databricks notebook source
-t = spark.sql("show tables in chad_upjohn_dbx_unit_tests;").collect()
+
+schema_name = "chad_invoice_processing"
+t = spark.sql(f"show tables in {schema_name};").collect()
 
 for i in t:
-    spark.sql(f'drop table chad_upjohn_dbx_unit_tests.{i.tableName};')
+    spark.sql(f"drop table {schema_name}.{i.tableName};")
 
-spark.sql(f'drop schema chad_upjohn_dbx_unit_tests;')
-
+spark.sql(f"drop schema {schema_name};")
