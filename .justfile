@@ -17,3 +17,9 @@ bundle-destroy:
 
 bundle-run:
     databricks bundle run unit_test -t dev --full-refresh-all
+
+sql-validations:
+    poetry run python src/sql.py
+
+pytest-unittest:
+    poetry run pytest src/sql.py -vv
