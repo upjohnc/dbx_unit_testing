@@ -4,9 +4,15 @@ import sys
 from databricks import sql
 
 
-def get_connection_config(token: str) -> dict:
+def get_connection_config() -> dict:
+    token = os.environ.get("TOKEN")
+    server = os.environ.get("DBX_SERVER")
+
+    if token is None:
+        print("Need access token")
+        sys.exit(1)
     return dict(
-        server_hostname="dbc-d02e2229-51a4.cloud.databricks.com",
+        server_hostname=server,
         http_path="/sql/1.0/warehouses/0b83bc4c230ceef2",
         access_token=token,
     )
@@ -82,15 +88,9 @@ def build_query() -> str:
 
 
 def main():
-    token = os.environ.get("TOKEN")
-
-    if token is None:
-        print("Need access token")
-        sys.exit(1)
-
     query = build_query()
 
-    with sql.connect(**get_connection_config(token)) as connection_:
+    with sql.connect(**get_connection_config()) as connection_:
         with connection_.cursor() as cursor_:
             cursor_.execute(query)
             result = cursor_.fetchall()
@@ -100,10 +100,13 @@ def main():
         print("No expectation records retrieved")
         sys.exit(1)
 
-    thing = get_failure_records(result)
-    if len(thing) > 0:
-        print(thing)
+    failure_records = get_failure_records(result)
+    if len(failure_records) > 0:
+        print("Failed Expectations in Unit Tests:")
+        for i in failure_records:
+            print("-", i)
         sys.exit(1)
+
     print("All good")
 
 
