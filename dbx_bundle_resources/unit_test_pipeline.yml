@@ -4,11 +4,11 @@ resources:
       name: unit_test_pipeline
       libraries:
         - notebook:
-            path: ../test/test_data_setup.py
+            path: ../pipeline_unit_test/test_data_setup.py
         - notebook:
             path: ../pipeline_code/invoice_processing.py
         - notebook:
-            path: ../test/unit_test.sql
+            path: ../pipeline_unit_test/unit_test.sql
       clusters:
         - label: default
           autoscale:
