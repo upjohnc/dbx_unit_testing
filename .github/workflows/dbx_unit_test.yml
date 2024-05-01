@@ -26,7 +26,6 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
           DATABRICKS_BUNDLE_ENV: dev
 
-  # Validate, deploy, and then run the bundle.
   pipeline_unit_test:
     name: "Run pipeline unit test"
     runs-on: ubuntu-latest
@@ -50,26 +49,26 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
           DATABRICKS_BUNDLE_ENV: dev
 
-  python:
-    name: Pyspark unit test check
+  dbx_bundle_clean_up:
+    name: "Remove bundle resources after successful run of unit tests"
     runs-on: ubuntu-latest
+
+    # Run the "deploy" job first.
     needs:
       - pipeline_unit_test
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
-    - name: Pip install
-      run: |
-        pip install -U pip poetry
-        poetry install --with gh_action
-    - name: Unit test check
-      env:
-        TOKEN: ${{ secrets.TOKEN }}
-        DBX_SERVER: ${{ secrets.DBX_SERVER }}
-      run: |
-        poetry run python src/sql.py
 
+    steps:
+      # Check out this repo, so that this workflow can access it.
+      - uses: actions/checkout@v4
+
+      # Use the downloaded Databricks CLI.
+      - uses: databricks/setup-cli@v0.218.1
+
+      # Run the Databricks workflow named "my-job" as defined in the
+      # bundle that was just deployed.
+      - run: databricks bundle destroy --auto-approve
+        working-directory: .
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
+          DATABRICKS_BUNDLE_ENV: dev
 

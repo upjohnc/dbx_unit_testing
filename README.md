@@ -18,9 +18,12 @@ Based on this [databricks example](https://notebooks.databricks.com/demos/dlt-un
 
 ## Pipeline Deployment & Run
 
-The pipelines are set up to be run manually and then checked for succes or failure by a human.
-To note, it can be automated to confirm the success through code that can be then run in
-a ci/cd pipeline.
+The pipelines are set up to be run manually or to be run as a workflow in github actions.
+
+In this repo, the github action triggers when a merge into master happens.  This seems
+to be the most functional because the databricks job will take time and also require
+spinning up databricks compute instances.  It will help to ensure that the unit tests
+are run before code goes into master but also keeping costs low.
 
 The databricks bundle is designed to run a job which has two tasks.  The first task runs
 the DLT pipeline and then on success the second task runs to clean up the tables and schema
@@ -30,6 +33,13 @@ check the DLT pipeline run for the success of the unit tests, and finally destro
 - run `databricks bundle deploy` : just command `just bundle-deploy`
 - run `databricks bundle run` : just command `just bundle-run`
 - run `databricks bundle destroy` : just command `just bundle-destroy`
+
+## SQL Validation
+
+Included in the code base is a python script that connects to the databricks instance
+and parses the event logs to report on failed expectations. The command that
+can be run is `just sql-validations`.  Additionally, there are
+some unit tests on the code that can be run with `just pytest-unittest`.
 
 ## Local Dev Set Up
 

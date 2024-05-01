@@ -13,7 +13,7 @@ bundle-deploy:
     databricks bundle deploy -t dev
 
 bundle-destroy:
-    databricks bundle destroy -t dev
+    databricks bundle destroy -t dev --auto-approve
 
 bundle-run:
     databricks bundle run unit_test -t dev --full-refresh-all

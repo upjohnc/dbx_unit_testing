@@ -10,7 +10,7 @@
 -- MAGIC %md
 -- MAGIC ## Test Customer Silver
 -- MAGIC
--- MAGIC Check that 
+-- MAGIC Check that
 -- MAGIC - customer_id is not null
 -- MAGIC - length of customer_name is greater than 1
 
@@ -18,7 +18,8 @@
 
 CREATE TEMPORARY LIVE TABLE TEST_customer_silver(
     CONSTRAINT no_nulls EXPECT(null_id = 0) ON VIOLATION FAIL UPDATE
-    , CONSTRAINT length_greater_than_1 EXPECT(length_id = 0) ON VIOLATION FAIL UPDATE
+    -- length_id should be zero, force failure to show github action functionality
+    , CONSTRAINT length_greater_than_1 EXPECT(length_id = 1) ON VIOLATION FAIL UPDATE
 )
 WITH customer_id_null AS (
     SELECT
@@ -66,7 +67,7 @@ WITH customer_id_null AS (
     FROM
         LIVE.invoices_silver
     WHERE
-        customer_id IS NULL) 
+        customer_id IS NULL)
 , invoice_no_null AS (
     SELECT
         count(*) AS row_count

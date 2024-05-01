@@ -1,3 +1,14 @@
+"""
+Script to check failures in Delta Live Table Expectations.
+
+For tables that have an expectation of warn or drop row,
+the record of pass and fails is stored in the events log.
+The script queries for those logged events and reports
+the expectation names of the failed events.
+
+The script can be repurposed for other reporting purposes.
+"""
+
 import os
 import sys
 
