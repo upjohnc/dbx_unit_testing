@@ -3,7 +3,10 @@ name: Pyspark Unit Tests
 on:
   push:
     branches:
-      - "master"
+      # pointing out to change the spelling of the branch for your own repo
+      # misspelled here to keep it from running each time
+      - "master-" 
+
 
 permissions:
   contents: read

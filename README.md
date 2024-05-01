@@ -34,6 +34,11 @@ check the DLT pipeline run for the success of the unit tests, and finally destro
 - run `databricks bundle run` : just command `just bundle-run`
 - run `databricks bundle destroy` : just command `just bundle-destroy`
 
+Two notes about the pipeline:
+
+- there is an intentionally failing exception in one of the TEST queries to show how failing works
+- you will need to add env vars for the databricks authentication token and for the url
+
 ## SQL Validation
 
 Included in the code base is a python script that connects to the databricks instance
