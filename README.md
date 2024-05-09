@@ -1,12 +1,12 @@
-# Databricks: Unit Test Example
+# Databricks: Integration Test Example
 
 This repo shows how to set up unit tests that can run as part of checks
 that the queries are defined to meet business rules.
 
 ## Design
 
-The silver and gold layers will be run as part of the unit tests.  The
-bronze layer in the unit tests is fake data that test the edge cases.
+The silver and gold layers will be run as part of the integration tests.  The
+bronze layer in the integration tests is fake data that test the edge cases.
 After the silver and gold layers queries run a set of expectations are
 run to test that the business rules are met.
 
@@ -38,6 +38,18 @@ Two notes about the pipeline:
 
 - there is an intentionally failing exception in one of the TEST queries to show how failing works
 - you will need to add env vars for the databricks authentication token and for the url
+
+## Unit Tests
+
+In `src/utils.py`, there is a function and a few unit tests on that function.  The example code
+shows how to run tests which need a spark session.  In `conftest.py`, the spark session is
+defined in a fixture. The fixture is scoped as 'class' so that the creation and deletion of the
+spark session object occurs with running the tests in the class.
+
+For github actions, there is a job to run all tests in the `src` directory.
+
+If the tests are run locally, you will need to add java's jdk.  I installed
+temurin which handled the installation of the jdk on an Apple m1.
 
 ## SQL Validation
 
