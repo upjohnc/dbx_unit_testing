@@ -1,14 +1,14 @@
 resources:
   pipelines:
-    unit_test_pipeline:
-      name: unit_test_pipeline
+    integration_test_pipeline:
+      name: integration_test_pipeline
       libraries:
         - notebook:
-            path: ../pipeline_unit_test/test_data_setup.py
+            path: ../pipeline_integration_test/test_data_setup.py
         - notebook:
             path: ../pipeline_code/invoice_processing.py
         - notebook:
-            path: ../pipeline_unit_test/unit_test.sql
+            path: ../pipeline_integration_test/integration_test.sql
       clusters:
         - label: default
           autoscale:

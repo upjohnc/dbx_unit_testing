@@ -6,7 +6,7 @@ resources:
       tasks:
         - task_key: unit_test_run
           pipeline_task:
-            pipeline_id: ${resources.pipelines.unit_test_pipeline.id}
+            pipeline_id: ${resources.pipelines.integration_test_pipeline.id}
             full_refresh: true
         - task_key: clean_up
           notebook_task:

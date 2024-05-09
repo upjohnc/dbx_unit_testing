@@ -1,5 +1,5 @@
 bundle:
-  name: chad_dbx_unit_tests
+  name: chad_dbx_integration_tests
 
 include:
   - dbx_bundle_resources/*.yml
