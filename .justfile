@@ -3,7 +3,7 @@ default:
 
 # install dev packages
 poetry-install:
-    poetry install --with dev --no-root
+    poetry install --with unit_test --no-root
 
 # set up pre-commit the  first time
 pre-commit:
@@ -22,4 +22,4 @@ sql-validations:
     poetry run python src/sql.py
 
 pytest-unittest:
-    poetry run pytest src/sql.py -vv
+    poetry run pytest -vv

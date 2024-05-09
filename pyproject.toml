@@ -21,9 +21,21 @@ pytest = "^8.2.0"
 pdbpp = "^0.10.3"
 databricks-sql-connector = "^3.1.2"
 
+
+[tool.poetry.group.unit_test.dependencies]
+pyspark = "^3.5.1"
+pytest = "^8.2.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 90
+
+[tool.pytest.ini_options]
+testpaths = [
+    "src/sql.py",
+    "src/utils.py",
+]
+
