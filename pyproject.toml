@@ -25,6 +25,7 @@ databricks-sql-connector = "^3.1.2"
 [tool.poetry.group.unit_test.dependencies]
 pyspark = "^3.5.1"
 pytest = "^8.2.0"
+databricks-sql-connector = "^3.1.2"
 
 [build-system]
 requires = ["poetry-core"]

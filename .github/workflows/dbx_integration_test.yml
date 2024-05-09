@@ -1,11 +1,11 @@
-name: Pyspark Unit Tests
+name: DLT Integration Tests
 
 on:
   push:
     branches:
       # pointing out to change the spelling of the branch for your own repo
       # misspelled here to keep it from running each time
-      - "master-" 
+      - "master-"
 
 
 permissions:
@@ -29,7 +29,7 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
           DATABRICKS_BUNDLE_ENV: dev
 
-  pipeline_unit_test:
+  pipeline_integration_test:
     name: "Run pipeline unit test"
     runs-on: ubuntu-latest
 
@@ -58,7 +58,7 @@ jobs:
 
     # Run the "deploy" job first.
     needs:
-      - pipeline_unit_test
+      - pipeline_integration_test
 
     steps:
       # Check out this repo, so that this workflow can access it.
@@ -74,4 +74,3 @@ jobs:
         env:
           DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
           DATABRICKS_BUNDLE_ENV: dev
-

@@ -1,0 +1,25 @@
+name: Pyspark Unit Tests
+
+on:
+  push
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    name: Pyspark unit test check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Pip install
+      run: |
+        pip install -U pip poetry
+        poetry install --with unit_test
+    - name: Unit test check
+      run: |
+        poetry run pytest -vv
