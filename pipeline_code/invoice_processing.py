@@ -11,6 +11,8 @@
 import dlt
 import pyspark.sql.functions as F
 
+from src.utils import columns_except
+
 # COMMAND ----------
 
 
@@ -56,6 +58,17 @@ invoice_columns = [
 )
 def invoices_silver():
     return dlt.read_stream("invoices_bronze").select(invoice_columns)
+
+
+# COMMAND ----------
+
+
+@dlt.table(table_properties={"quality": "silver"})
+def invoice_without_country():
+    # show the use of columns_except (select all except)
+    df = dlt.read_stream("invoices_bronze")
+    desired_columns = columns_except(df, ["Country"])
+    return df.select(*desired_columns)
 
 
 # COMMAND ----------
